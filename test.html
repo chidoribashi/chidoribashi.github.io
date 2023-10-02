@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <h1></h1>
+    <p id="location">...</p>
+
+    <script>
+        function showPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            var locationElement = document.getElementById("location");
+            locationElement.innerHTML = "" + latitude + ", " + longitude;
+
+            // Gửi thông tin vị trí về máy chủ ở đây
+            sendLocationToServer(latitude, longitude);
+        }
+
+        function sendLocationToServer(latitude, longitude) {
+            // Sử dụng AJAX hoặc Fetch để gửi dữ liệu vị trí về máy chủ
+            // Ví dụ sử dụng Fetch:
+            fetch('https://jsonplaceholder.typicode.com/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newUser)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Người dùng đã được tạo:', {"latitude":latitude,"longitude":longitude});
+            })
+            .catch(error => {
+                console.error('Lỗi khi tạo người dùng:', error);
+            });
+            fetch("/save-location", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ latitude, longitude })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Vị trí đã được gửi thành công");
+                } else {
+                    console.error("Gửi vị trí thất bại");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi gửi vị trí:", error);
+            });
+        }
+
+        // Lấy vị trí ngay khi trang được tải
+        navigator.geolocation.getCurrentPosition(showPosition);
+    </script>
+</body>
+</html>
